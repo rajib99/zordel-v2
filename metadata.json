@@ -1,0 +1,6 @@
+{
+  "name": "Alex Zordel - AI Consultant Portfolio",
+  "description": "Professional portfolio website for Alex Zordel, Senior AI Consultant. Features an interactive AI ROI Calculator, AI Readiness Assessment, Case Studies, and detailed services/pricing structures.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
