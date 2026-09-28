@@ -3,23 +3,46 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation, { Footer } from './components/Navigation';
 import AboutView from './components/AboutView';
 import ServicesView from './components/ServicesView';
 import CaseStudiesView from './components/CaseStudiesView';
 import InteractiveToolsView from './components/InteractiveToolsView';
+import ConsultationView from './components/ConsultationView';
 import ContactView from './components/ContactView';
+import TermsView from './components/TermsView';
+import PrivacyView from './components/PrivacyView';
+import { ROUTES, tabFromPath } from './routes';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('about');
-  
-  // State for linking diagnostic results to the contact form
+  const [activeTab, setActiveTabState] = useState<string>(() => tabFromPath(window.location.pathname));
+
+  // Keep the page in sync with browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => setActiveTabState(tabFromPath(window.location.pathname));
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    document.title = ROUTES[activeTab]?.title ?? ROUTES.about.title;
+  }, [activeTab]);
+
+  const setActiveTab = (tabId: string) => {
+    const path = ROUTES[tabId]?.path ?? '/';
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+    setActiveTabState(tabId);
+  };
+
+  // State for linking diagnostic results to the consultation form
   const [linkedAudit, setLinkedAudit] = useState<{ score: number; level: string; details: string } | null>(null);
 
   const handleLinkAuditToContact = (data: { score: number; level: string; details: string }) => {
     setLinkedAudit(data);
-    setActiveTab('contact');
+    setActiveTab('consultation');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -27,31 +50,36 @@ export default function App() {
     setLinkedAudit(null);
   };
 
+  const handleNavigate = (tabId: string) => {
+    setActiveTab(tabId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'about':
-        return <AboutView onNavigate={(tabId) => {
-          setActiveTab(tabId);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }} />;
+        return <AboutView onNavigate={handleNavigate} />;
       case 'services':
-        return <ServicesView onNavigate={(tabId) => {
-          setActiveTab(tabId);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }} />;
+        return <ServicesView onNavigate={handleNavigate} />;
       case 'case-studies':
         return <CaseStudiesView />;
       case 'tools':
         return <InteractiveToolsView onLinkToContact={handleLinkAuditToContact} />;
-      case 'contact':
+      case 'consultation':
         return (
-          <ContactView 
-            linkedAuditData={linkedAudit} 
-            onClearLinkedAudit={handleClearLinkedAudit} 
+          <ConsultationView
+            linkedAuditData={linkedAudit}
+            onClearLinkedAudit={handleClearLinkedAudit}
           />
         );
+      case 'contact':
+        return <ContactView onNavigate={handleNavigate} />;
+      case 'terms':
+        return <TermsView onNavigate={handleNavigate} />;
+      case 'privacy':
+        return <PrivacyView onNavigate={handleNavigate} />;
       default:
-        return <AboutView onNavigate={setActiveTab} />;
+        return <AboutView onNavigate={handleNavigate} />;
     }
   };
 
@@ -72,4 +100,3 @@ export default function App() {
     </div>
   );
 }
-

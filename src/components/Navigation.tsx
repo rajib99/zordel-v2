@@ -1,5 +1,6 @@
 import { Menu, X, ArrowUpRight, Cpu, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
+import { ROUTES } from '../routes';
 
 interface NavigationProps {
   activeTab: string;
@@ -14,7 +15,8 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
     { id: 'services', label: 'Services & Method' },
     { id: 'case-studies', label: 'Case Studies' },
     { id: 'tools', label: 'ROI & Diagnostic' },
-    { id: 'contact', label: 'Consultation Form' }
+    { id: 'consultation', label: 'Consultation Form' },
+    { id: 'contact', label: 'Contact' }
   ];
 
   const handleTabChange = (tabId: string) => {
@@ -63,7 +65,7 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
             {/* CTA Button */}
             <div className="hidden md:flex items-center">
               <button
-                onClick={() => handleTabChange('contact')}
+                onClick={() => handleTabChange('consultation')}
                 className="inline-flex items-center space-x-1.5 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-white bg-slate-900 hover:bg-indigo-600 rounded-lg transition-all duration-200"
                 id="cta-header-book"
               >
@@ -104,7 +106,7 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
             ))}
             <div className="pt-4 border-t border-slate-100 px-4">
               <button
-                onClick={() => handleTabChange('contact')}
+                onClick={() => handleTabChange('consultation')}
                 className="w-full inline-flex items-center justify-center space-x-1.5 px-4 py-3 text-base font-medium text-white bg-slate-900 hover:bg-indigo-600 rounded-md transition-all"
                 id="cta-mobile-book"
               >
@@ -128,6 +130,13 @@ export function Footer({ setActiveTab }: { setActiveTab: (tab: string) => void }
   const handleFooterLink = (tabId: string) => {
     setActiveTab(tabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Real anchor links so pages can be opened in new tabs, but navigated in-app on normal click
+  const handleAnchorClick = (e: MouseEvent<HTMLAnchorElement>, tabId: string) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    handleFooterLink(tabId);
   };
 
   return (
@@ -165,7 +174,7 @@ export function Footer({ setActiveTab }: { setActiveTab: (tab: string) => void }
               <li className="hover:text-white transition-colors cursor-pointer" onClick={() => handleFooterLink('services')}>Consulting Services</li>
               <li className="hover:text-white transition-colors cursor-pointer" onClick={() => handleFooterLink('case-studies')}>Deployment Case Studies</li>
               <li className="hover:text-white transition-colors cursor-pointer" onClick={() => handleFooterLink('tools')}>Interactive ROI Calculator</li>
-              <li className="hover:text-white transition-colors cursor-pointer" onClick={() => handleFooterLink('contact')}>Consultation Request</li>
+              <li className="hover:text-white transition-colors cursor-pointer" onClick={() => handleFooterLink('consultation')}>Consultation Request</li>
             </ul>
           </div>
         </div>
@@ -175,9 +184,21 @@ export function Footer({ setActiveTab }: { setActiveTab: (tab: string) => void }
             &copy; {currentYear} Alex Zordel AI Consulting. All rights reserved.
           </div>
           <div className="flex space-x-6">
-            <span className="hover:text-white transition-colors cursor-pointer">Privacy & Data Governance</span>
-            <span className="hover:text-white transition-colors cursor-pointer">HIPAA Compliance Commitment</span>
-            <span className="hover:text-white transition-colors cursor-pointer">SLA Agreement Details</span>
+            {[
+              { id: 'contact', label: 'Contact' },
+              { id: 'terms', label: 'Terms & Conditions' },
+              { id: 'privacy', label: 'Privacy Policy' },
+            ].map((link) => (
+              <a
+                key={link.id}
+                href={ROUTES[link.id].path}
+                onClick={(e) => handleAnchorClick(e, link.id)}
+                className="hover:text-white transition-colors"
+                id={`footer-link-${link.id}`}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

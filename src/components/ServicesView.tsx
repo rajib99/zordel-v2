@@ -95,7 +95,7 @@ export default function ServicesView({ onNavigate }: ServicesProps) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onNavigate('contact');
+                      onNavigate('consultation');
                     }}
                     className={`w-full py-2.5 px-3 text-[10px] font-bold uppercase tracking-widest rounded-lg text-center transition-colors ${
                       isSelected
@@ -194,7 +194,7 @@ export default function ServicesView({ onNavigate }: ServicesProps) {
                 <span>Next workshop slots open next Monday.</span>
               </div>
               <button
-                onClick={() => onNavigate('contact')}
+                onClick={() => onNavigate('consultation')}
                 className="inline-flex items-center space-x-1 font-mono font-bold text-indigo-600 hover:text-indigo-800"
               >
                 <span>Schedule pre-kickoff discovery call</span>
@@ -218,7 +218,7 @@ export default function ServicesView({ onNavigate }: ServicesProps) {
           </p>
         </div>
         <button
-          onClick={() => onNavigate('contact')}
+          onClick={() => onNavigate('consultation')}
           className="bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest px-5 py-3 rounded-lg transition-colors flex-shrink-0"
         >
           Request Custom NDA Setup
