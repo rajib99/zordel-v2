@@ -180,8 +180,9 @@ export function Footer({ setActiveTab }: { setActiveTab: (tab: string) => void }
         </div>
 
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-xs">
-          <div>
-            &copy; {currentYear} Alex Zordel AI Consulting. All rights reserved.
+          <div className="text-center sm:text-left space-y-1">
+            <div>&copy; {currentYear} Alex Zordel AI Consulting. All rights reserved.</div>
+            <div className="text-slate-500">Zordel is a part of EVU.</div>
           </div>
           <div className="flex space-x-6">
             {[
